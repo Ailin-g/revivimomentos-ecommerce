@@ -122,19 +122,21 @@ class Cart extends Component {
     }
 
     render() {
+        let datosProducto;
+        if(this.props.location.state) {
+            datosProducto = this.props.location.state;
+            
+            this.setState( this.state.articulos, () => {
+                this.state.articulos.push(
+                    <div style={articuloStyle}>
+                        <p style={nomProdStyle}>{datosProducto.nombreProd}</p>
+                        <p style={cantProdStyle}>{datosProducto.precioProd}</p>
+                        <p style={precioProdStyle}>{datosProducto.initial}</p>
+                    </div>
+                );
+            })
+        }
         
-        let datosProducto = this.props.location.state;
-
-        this.setState( this.state.articulos, () => {
-            this.state.articulos.push(
-                <div style={articuloStyle}>
-                    <p style={nomProdStyle}>{datosProducto.nombreProd}</p>
-                    <p style={cantProdStyle}>{datosProducto.precioProd}</p>
-                    <p style={precioProdStyle}>{datosProducto.initial}</p>
-                </div>
-            );
-        })
-
 
     const ordenGenerada = () => {
         
@@ -158,13 +160,14 @@ class Cart extends Component {
                 <div style ={cabeceraDetalle}>Precio</div>
             </div>
             {this.state.articulos}
-            <form action={this.setState({activarGenerador: true})}>
+            {console.log(this.state.articulos)}
+            <form onSubmit={this.setState({activarGenerador: true})}>
                 <label for="nombre">Nombre</label>
-                <input type="text" name="nombre" value={this.state.nombreCliente} onChange={this.handleChangeNombre} required></input>
+                <input type="text" name="nombre" onSubmit={this.handleChangeNombre} required></input>
                 <label for="email">Email</label>
-                <input type="email" name="email" value={this.state.emailCliente} onChange={this.handleChangeMail} required></input>
+                <input type="email" name="email" onSubmit={this.handleChangeMail} required></input>
                 <label for="telefono">Telefono</label>
-                <input type="number" name="telefono" value={this.state.telefonoCliente} onChange={this.handleChangeTelefomo} required></input>
+                <input type="number" name="telefono"  onSubmit={this.handleChangeTelefomo} required></input>
                 <input type="submit" value="Siguiente"></input>
             </form>
             {this.activarGenerador ? <Btn nombre="Generar orden" clicked={ordenGenerada()}></Btn> : <Btn nombre="Completar datos!"></Btn>}
@@ -177,19 +180,11 @@ class Cart extends Component {
             <Link to="/catalogo"><Btn nombre="ir a productos!"></Btn></Link>
         </div>
     )
-    let cartFinal;
 
-    if(this.cartVacio) {
-        cartFinal = infoCarrito
-    } else {
-        cartFinal = carritoVacio
-    }
 
     return (
         <div style={seccionCarrito}>
-            {cartFinal}
-            {console.log(this.state.articulos)}
-            {console.log(datosProducto)}
+            {this.state.articulos ? infoCarrito : carritoVacio}
         </div>
     )
 }
